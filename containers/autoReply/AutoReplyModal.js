@@ -10,6 +10,8 @@ import AutoReplyFormMonthly from './AutoReplyForm/AutoReplyFormMonthly';
 import AutoReplyFormDaily from './AutoReplyForm/AutoReplyFormDaily';
 import AutoReplyFormWeekly from './AutoReplyForm/AutoReplyFormWeekly';
 import AutoReplyFormPermanent from './AutoReplyForm/AutoReplyFormPermanent';
+import DurationField from './AutoReplyForm/fields/DurationField';
+import RichTextEditor from '../../components/input/RichTextEditor';
 
 const AutoReplyModal = ({ onClose, autoresponder, ...rest }) => {
     const [loading, withLoading] = useLoading();
@@ -34,6 +36,7 @@ const AutoReplyModal = ({ onClose, autoresponder, ...rest }) => {
             submit={c('Action').t`Update`}
             {...rest}
         >
+            <DurationField value={model.duration} onChange={updateModel('duration')} />
             {
                 {
                     [AutoReplyDuration.FIXED]: <AutoReplyFormFixed model={model} updateModel={updateModel} />,
@@ -43,6 +46,7 @@ const AutoReplyModal = ({ onClose, autoresponder, ...rest }) => {
                     [AutoReplyDuration.PERMANENT]: <AutoReplyFormPermanent model={model} updateModel={updateModel} />
                 }[model.duration]
             }
+            <RichTextEditor value={model.message} onChange={updateModel('message')} />
         </FormModal>
     );
 };

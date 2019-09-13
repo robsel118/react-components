@@ -2,18 +2,15 @@ import React from 'react';
 import { c } from 'ttag';
 import PropTypes from 'prop-types';
 
-import DurationField from './fields/DurationField';
 import DateField from './fields/DateField';
 import Alert from '../../../components/alert/Alert';
 import TimeField from './fields/TimeField';
 import TimeZoneField from './fields/TimeZoneField';
-import RichTextEditor from '../../../components/input/RichTextEditor';
 import { modelShape } from './autoReplyShapes';
 
-const AutoReplyFormFixed = ({ model: { duration, start, end, timezone, message }, updateModel }) => {
+const AutoReplyFormFixed = ({ model: { start, end, timezone }, updateModel }) => {
     return (
         <>
-            <DurationField value={duration} onChange={updateModel('duration')} />
             <Alert>{c('Info').t`Auto-reply is active from the start time to the end time.`}</Alert>
             <DateField
                 id="startDate"
@@ -42,7 +39,6 @@ const AutoReplyFormFixed = ({ model: { duration, start, end, timezone, message }
                 id="endTime"
             />
             <TimeZoneField value={timezone} onChange={updateModel('timezone')} />
-            <RichTextEditor value={message} onChange={updateModel('message')} />
         </>
     );
 };

@@ -2,18 +2,15 @@ import React from 'react';
 import { c } from 'ttag';
 import PropTypes from 'prop-types';
 
-import DurationField from './fields/DurationField';
 import DayOfMonthField from './fields/DayOfMonthField';
 import TimeZoneField from './fields/TimeZoneField';
 import Alert from '../../../components/alert/Alert';
-import RichTextEditor from '../../../components/input/RichTextEditor';
 import TimeField from './fields/TimeField';
 import { modelShape } from './autoReplyShapes';
 
-const AutoReplyFormMonthly = ({ model: { duration, start, end, timezone, message }, updateModel }) => {
+const AutoReplyFormMonthly = ({ model: { start, end, timezone }, updateModel }) => {
     return (
         <>
-            <DurationField value={duration} onChange={updateModel('duration')} />
             <Alert>{c('Info').t`Auto-reply is active each month between the selected start and end time.`}</Alert>
             <DayOfMonthField
                 id="startDayOfMonth"
@@ -40,7 +37,6 @@ const AutoReplyFormMonthly = ({ model: { duration, start, end, timezone, message
                 id="endTime"
             />
             <TimeZoneField value={timezone} onChange={updateModel('timezone')} />
-            <RichTextEditor value={message} onChange={updateModel('message')} />
         </>
     );
 };

@@ -2,18 +2,15 @@ import { c } from 'ttag';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import RichTextEditor from '../../../components/input/RichTextEditor';
 import Alert from '../../../components/alert/Alert';
-import DurationField from './fields/DurationField';
 import TimeZoneField from './fields/TimeZoneField';
 import DayOfWeekField from './fields/DayOfWeekField';
 import TimeField from './fields/TimeField';
 import { modelShape } from './autoReplyShapes';
 
-const AutoReplyFormWeekly = ({ model: { duration, start, end, timezone, message }, updateModel }) => {
+const AutoReplyFormWeekly = ({ model: { start, end, timezone }, updateModel }) => {
     return (
         <>
-            <DurationField value={duration} onChange={updateModel('duration')} />
             <Alert>{c('Info').t`Auto-reply is active each week between the selected start and end time.`}</Alert>
             <DayOfWeekField
                 value={start.day}
@@ -40,7 +37,6 @@ const AutoReplyFormWeekly = ({ model: { duration, start, end, timezone, message 
                 id="endTime"
             />
             <TimeZoneField value={timezone} onChange={updateModel('timezone')} />
-            <RichTextEditor value={message} onChange={updateModel('message')} />
         </>
     );
 };
