@@ -48,9 +48,12 @@ const TimeInput = ({ onChange, value, interval = 15, ...rest }) => {
         close();
     };
 
-    const handleKeyDown = ({ key }) => {
+    const handleKeyDown = (event) => {
+        const { key } = event;
         if (key === 'Enter') {
             parseAndSetDate(temporaryInput);
+            event.preventDefault();
+            return close();
         }
 
         if (key === 'ArrowDown') {
