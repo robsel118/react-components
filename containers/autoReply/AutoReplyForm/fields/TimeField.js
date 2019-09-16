@@ -7,7 +7,7 @@ const TimeField = ({ id, label, value, onChange }) => {
         <Row>
             <Label htmlFor={id}>{label}</Label>
             <Field>
-                <TimeInput id={id} interval={30} value={value} onChange={onChange} />
+                <TimeInput id={id} value={value} onChange={onChange} />
             </Field>
         </Row>
     );
