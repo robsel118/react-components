@@ -6,6 +6,7 @@ import EventModelListener from '../eventManager/EventModelListener';
 import EventNotices from '../eventManager/EventNotices';
 import LoaderPage from './LoaderPage';
 import StandardPreload from './StandardPreload';
+import ForceRefreshProvider from '../forceRefresh/Provider';
 
 const StandardPrivateApp = ({ locales = {}, onLogout, preloadModels = [], eventModels = [], children }) => {
     const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ const StandardPrivateApp = ({ locales = {}, onLogout, preloadModels = [], eventM
             <EventNotices />
             <ThemeInjector />
             <ModalsChildren />
-            {children}
+            <ForceRefreshProvider>{children}</ForceRefreshProvider>
         </EventManagerProvider>
     );
 };
