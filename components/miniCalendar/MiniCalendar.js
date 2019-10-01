@@ -7,6 +7,7 @@ import MonthDays from './MonthDays';
 import WeekDays from './WeekDays';
 import WeekNumbers from './WeekNumbers';
 import Icon from '../icon/Icon';
+import './miniCalendar.scss';
 
 const MiniCalendar = ({
     now = new Date(),
@@ -17,6 +18,9 @@ const MiniCalendar = ({
     weekStartsOn = 1,
     weekdaysLong = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     weekdaysShort = ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    nextMonth = 'Next month',
+    prevMonth = 'Prev month',
+    formatDay,
     months = [
         'January',
         'February',
@@ -71,14 +75,16 @@ const MiniCalendar = ({
     const preventLeaveFocus = (e) => e.preventDefault();
 
     return (
-        <div onMouseDown={preventLeaveFocus}>
+        <div className="minicalendar" onMouseDown={preventLeaveFocus} aria-label={monthLabel}>
             <div className="flex">
                 <span className="bold flex-item-fluid">{monthLabel}</span>
                 <button className="mr1" onClick={() => handleSwitchMonth(-1)}>
                     <Icon name="caret" className="rotateZ-90" />
+                    <span className="sr-only">{prevMonth}</span>
                 </button>
                 <button onClick={() => handleSwitchMonth(1)}>
                     <Icon name="caret" className="rotateZ-270" />
+                    <span className="sr-only">{nextMonth}</span>
                 </button>
             </div>
             <div style={style}>
@@ -96,6 +102,7 @@ const MiniCalendar = ({
                         numberOfWeeks={numberOfWeeks}
                         numberOfDays={numberOfDays}
                         days={days}
+                        formatDay={formatDay}
                         dateRange={dateRange}
                         onSelectDate={onSelectDate}
                         onSelectDateRange={onSelectDateRange}
@@ -112,8 +119,12 @@ const MiniCalendar = ({
 MiniCalendar.propTypes = {
     date: PropTypes.instanceOf(Date).isRequired,
     dateRange: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+    dateFnLocale: PropTypes.object.isRequired,
+    nextMonth: PropTypes.string.isRequired,
+    prevMonth: PropTypes.string.isRequired,
     onSelectDate: PropTypes.func.isRequired,
     onSelectDateRange: PropTypes.func,
+    formatDay: PropTypes.func,
     weekStartsOn: PropTypes.number,
     numberOfDays: PropTypes.number,
     numberOfWeeks: PropTypes.number,

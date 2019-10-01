@@ -2,44 +2,25 @@ import { isAfter, isSameDay, isSameMonth, isWithinInterval } from 'date-fns';
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-const getDayStyle = ({ isActiveMonth, selectedDate, now, dayDate, range }) => {
-    const color = (() => {
-        if (isSameDay(now, dayDate)) {
-            return 'red';
-        }
-        if (isSameDay(selectedDate, dayDate)) {
-            return 'green';
-        }
-    })();
+import { classnames } from '../../helpers/component';
 
-    const rangeStyle = (() => {
-        if (!range) {
-            return {};
-        }
-        const [rangeStart, rangeEnd] = range;
-        if (!rangeStart || !rangeEnd) {
-            return {};
-        }
-        if (isSameDay(rangeStart, dayDate) || isSameDay(rangeEnd, dayDate)) {
-            return {
-                background: 'blue'
-            };
-        }
-        if (isWithinInterval(dayDate, { start: rangeStart, end: rangeEnd })) {
-            return {
-                background: 'blue',
-                opacity: '0.5'
-            };
-        }
-        return {};
-    })();
+const getRangeClass = (range, dayDate) => {
+    if (!range) {
+        return;
+    }
 
-    return {
-        cursor: 'pointer',
-        opacity: !isActiveMonth ? '0.3' : '1',
-        color,
-        ...rangeStyle
-    };
+    const [rangeStart, rangeEnd] = range;
+    if (!rangeStart || !rangeEnd) {
+        return;
+    }
+
+    if (isSameDay(rangeStart, dayDate) || isSameDay(rangeEnd, dayDate)) {
+        return 'minicalendar-day--range-bound';
+    }
+
+    if (isWithinInterval(dayDate, { start: rangeStart, end: rangeEnd })) {
+        return 'minicalendar-day--range';
+    }
 };
 
 const MonthDays = ({
@@ -47,6 +28,7 @@ const MonthDays = ({
     onSelectDate,
     onSelectDateRange,
     dateRange,
+    formatDay,
     now,
     selectedDate,
     activeDate,
@@ -61,9 +43,7 @@ const MonthDays = ({
     const style = {
         display: 'grid',
         gridTemplateColumns: `repeat(${numberOfDays}, ${gridSize})`,
-        gridTemplateRows: `repeat(${numberOfWeeks}, ${gridSize})`,
-        textAlign: 'center',
-        userSelect: 'none'
+        gridTemplateRows: `repeat(${numberOfWeeks}, ${gridSize})`
     };
 
     const getDate = (el) => {
@@ -131,6 +111,7 @@ const MonthDays = ({
 
     return (
         <div
+            className="aligncenter minicalendar-days"
             style={style}
             onClick={handleClick}
             onMouseDown={onSelectDateRange ? handleMouseDown : null}
@@ -138,20 +119,26 @@ const MonthDays = ({
         >
             {days.map((dayDate, i) => {
                 const isActiveMonth = isSameMonth(dayDate, activeDate);
+                const isCurrent = isSameDay(now, dayDate);
+                const isSelected = isSameDay(selectedDate, dayDate);
+
+                const className = classnames([
+                    'minicalendar-day',
+                    !isActiveMonth && 'minicalendar-day--inactive-month',
+                    getRangeClass(temporaryDateRange || dateRange || undefined, dayDate)
+                ]);
+
                 return (
-                    <span
+                    <button
+                        aria-label={formatDay(dayDate)}
+                        aria-current={isCurrent}
+                        aria-selected={isSelected}
                         key={dayDate.toString()}
-                        style={getDayStyle({
-                            isActiveMonth,
-                            selectedDate,
-                            now,
-                            dayDate,
-                            range: temporaryDateRange || dateRange || undefined
-                        })}
+                        className={className}
                         data-i={i}
                     >
                         {dayDate.getDate()}
-                    </span>
+                    </button>
                 );
             })}
         </div>
@@ -161,6 +148,7 @@ const MonthDays = ({
 MonthDays.propTypes = {
     days: PropTypes.array.isRequired,
     dateRange: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+    formatDay: PropTypes.func.isRequired,
     onSelectDate: PropTypes.func.isRequired,
     onSelectDateRange: PropTypes.func,
     numberOfDays: PropTypes.number.isRequired,

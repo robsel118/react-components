@@ -1,14 +1,13 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { MiniCalendar } from 'react-components';
 import { format, parse, addDays } from 'date-fns';
-import { getWeekStartsOn, getFormattedWeekdays, getFormattedMonths } from 'proton-shared/lib/date/date';
 import { dateLocale } from 'proton-shared/lib/i18n';
 
 import Input from './Input';
 import { usePopperAnchor } from '../popper';
 import Dropdown from '../dropdown/Dropdown';
 import { generateUID } from '../../helpers/component';
+import LocalizedMiniCalendar from '../miniCalendar/LocalizedMiniCalendar';
 
 const toFormatted = (value, locale) => {
     return format(value, 'P', { locale });
@@ -67,16 +66,6 @@ const DateInput = ({ value, min, max, onChange, ...rest }) => {
         }
     };
 
-    const weekdaysLong = useMemo(() => {
-        return getFormattedWeekdays('cccc', { locale: dateLocale });
-    }, [dateLocale]);
-    const weekdaysShort = useMemo(() => {
-        return getFormattedWeekdays('ccccc', { locale: dateLocale });
-    }, [dateLocale]);
-    const months = useMemo(() => {
-        return getFormattedMonths('MMMM', { locale: dateLocale });
-    }, [dateLocale]);
-
     return (
         <>
             <Input
@@ -90,15 +79,7 @@ const DateInput = ({ value, min, max, onChange, ...rest }) => {
                 {...rest}
             />
             <Dropdown id={uid} isOpen={isOpen} anchorRef={anchorRef} onClose={close} autoClose={false}>
-                <MiniCalendar
-                    weekdaysShort={weekdaysShort}
-                    weekdaysLong={weekdaysLong}
-                    months={months}
-                    weekStartsOn={getWeekStartsOn(dateLocale)}
-                    date={value}
-                    onSelectDate={handleSelectDate}
-                    hasWeekNumbers={false}
-                />
+                <LocalizedMiniCalendar date={value} onSelectDate={handleSelectDate} hasWeekNumbers={false} />
             </Dropdown>
         </>
     );

@@ -7,9 +7,7 @@ const WeekNumbers = ({ gridSize, days, numberOfWeeks }) => {
     const style = {
         display: 'grid',
         gridTemplateColumns: gridSize,
-        gridTemplateRows: `repeat(${numberOfWeeks + 1}, ${gridSize})`,
-        opacity: '0.3',
-        textAlign: 'center'
+        gridTemplateRows: `repeat(${numberOfWeeks + 1}, ${gridSize})`
     };
 
     const weekNumberLabels = useMemo(() => {
@@ -19,7 +17,7 @@ const WeekNumbers = ({ gridSize, days, numberOfWeeks }) => {
     }, [days]);
 
     return (
-        <div style={style}>
+        <div className="aligncenter minicalendar-weeknumbers" style={style}>
             <span />
             {weekNumberLabels}
         </div>

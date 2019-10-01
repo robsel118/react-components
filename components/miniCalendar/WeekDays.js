@@ -6,9 +6,7 @@ const WeekDays = ({ weekdaysShort, weekdaysLong, weekStartsOn, gridSize, numberO
     const style = {
         display: 'grid',
         gridTemplateColumns: `repeat(${numberOfDays}, ${gridSize})`,
-        gridTemplateRows: gridSize,
-        opacity: '0.3',
-        textAlign: 'center'
+        gridTemplateRows: gridSize
     };
 
     const weekDaysLabels = useMemo(() => {
@@ -18,13 +16,18 @@ const WeekDays = ({ weekdaysShort, weekdaysLong, weekStartsOn, gridSize, numberO
             const tooltip = weekdaysLong[idx];
             return (
                 <Tooltip key={label + i} title={tooltip}>
-                    <span>{label}</span>
+                    <span aria-hidden="true">{label}</span>
+                    <span className="sr-only">{tooltip}</span>
                 </Tooltip>
             );
         });
     }, [weekdaysShort, weekStartsOn]);
 
-    return <div style={style}>{weekDaysLabels}</div>;
+    return (
+        <div className="aligncenter minicalendar-weekdays" style={style}>
+            {weekDaysLabels}
+        </div>
+    );
 };
 
 WeekDays.propTypes = {

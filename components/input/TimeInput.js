@@ -2,12 +2,12 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { addMinutes, startOfDay, format, parse } from 'date-fns';
 import { dateLocale } from 'proton-shared/lib/i18n';
+import { findLongestMatchingIndex } from 'proton-shared/lib/helpers/string';
 
 import Input from './Input';
 import Dropdown from '../dropdown/Dropdown';
-import TimeInputSelect from './TimeInputSelect';
 import { usePopperAnchor } from '../popper';
-import { generateUID } from '../../helpers/component';
+import { classnames, generateUID } from '../../helpers/component';
 
 const toFormatted = (value, locale) => {
     return format(value, 'p', { locale });
@@ -17,7 +17,7 @@ const fromFormatted = (value, locale) => {
     return parse(value, 'p', new Date(), { locale });
 };
 
-const TimeInput = ({ onChange, value, interval = 15, ...rest }) => {
+const TimeInput = ({ onChange, value, interval = 30, ...rest }) => {
     const [uid] = useState(generateUID('dropdown'));
     const { anchorRef, isOpen, open, close } = usePopperAnchor();
     const [temporaryInput, setTemporaryInput] = useState(() => toFormatted(value, dateLocale));
@@ -65,6 +65,7 @@ const TimeInput = ({ onChange, value, interval = 15, ...rest }) => {
         }
     };
 
+    const scrollRef = useRef();
     const listRef = useRef();
     const options = useMemo(() => {
         const multiplier = (24 * 60) / interval;
@@ -78,26 +79,21 @@ const TimeInput = ({ onChange, value, interval = 15, ...rest }) => {
         });
     }, []);
 
-    const matchingValue = (() => {
-        const first = options.find(({ label }) => label.includes(temporaryInput));
-        if (first) {
-            return first.value;
-        }
-        const temporaryInput2 = temporaryInput.slice(2);
-        const second = options.find(({ label }) => label.includes(temporaryInput2));
-        return second ? second.value : undefined;
-    })();
+    const matchingIndex = useMemo(() => {
+        const idx = findLongestMatchingIndex(options.map(({ label }) => label), temporaryInput);
+        return idx === -1 ? undefined : idx;
+    }, [options, temporaryInput]);
 
     useEffect(() => {
         if (!isOpen) {
             return;
         }
-        const selectedEl = listRef.current.querySelector('[data-is-selected=true]');
-        if (selectedEl) {
-            listRef.current.scrollTop =
-                selectedEl.offsetTop - (listRef.current.clientHeight - selectedEl.clientHeight) / 2;
+        const matchingEl = listRef.current.children[matchingIndex];
+        if (matchingEl) {
+            scrollRef.current.scrollTop =
+                matchingEl.offsetTop - (scrollRef.current.clientHeight - matchingEl.clientHeight) / 2;
         }
-    }, [matchingValue, isOpen]);
+    }, [matchingIndex, isOpen]);
 
     return (
         <>
@@ -113,15 +109,24 @@ const TimeInput = ({ onChange, value, interval = 15, ...rest }) => {
                 {...rest}
             />
             <Dropdown size="narrow" id={uid} isOpen={isOpen} anchorRef={anchorRef} onClose={close} autoClose={false}>
-                <div className="dropDown-content" onMouseDown={(e) => e.preventDefault()} ref={listRef}>
-                    <TimeInputSelect
-                        value={matchingValue}
-                        options={options}
-                        onSelect={(newDate) => {
-                            handleSelectDate(newDate);
-                            close();
-                        }}
-                    />
+                <div className="dropDown-content" onMouseDown={(e) => e.preventDefault()} ref={scrollRef}>
+                    <ul className="unstyled mt0 mb0" ref={listRef}>
+                        {options.map(({ label, value: otherValue }, i) => {
+                            const isSelected = label === temporaryInput;
+                            return (
+                                <li className={classnames(['pt0-5 pb0-5 p1', isSelected && 'bold'])} key={i}>
+                                    <button
+                                        onClick={() => {
+                                            handleSelectDate(otherValue);
+                                            close();
+                                        }}
+                                    >
+                                        {label}
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </div>
             </Dropdown>
         </>
