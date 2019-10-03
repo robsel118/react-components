@@ -10,8 +10,8 @@ import {
     convertZonedDateTimeToUTC,
     getTimezone
 } from 'proton-shared/lib/date/timezone';
+import { AutoReplyDuration } from 'proton-shared/lib/constants';
 import {
-    AutoReplyDuration,
     DAY_SECONDS,
     HOUR_SECONDS,
     MINUTES_SECONDS,

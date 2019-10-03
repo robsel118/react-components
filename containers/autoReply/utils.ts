@@ -29,7 +29,7 @@ export const getDurationOptions = () => [
     }
 ];
 
-export const getMatchingTimezone = (timezone, timezoneOptions) => {
+export const getMatchingTimezone = (timezone: string, timezoneOptions: { text: string; value: string }[]) => {
     const fullMatch = timezoneOptions.find(({ value }) => {
         return value === timezone;
     });
@@ -56,10 +56,11 @@ export const getTimeZoneOptions = () => {
         const { offset } = getUTCOffset(dummyDate, findTimeZone(name));
         // offset comes with the opposite sign in the timezone-support library
         const sign = Math.sign(offset) === 1 ? '-' : '+';
-        const minutes = `${Math.abs(offset % 60)}`;
-        const hours = `${(Math.abs(offset) - minutes) / 60}`;
-        const mm = minutes.length === 1 ? `0${minutes}` : `${minutes}`;
-        const hh = hours.length === 1 ? `0${hours}` : `${hours}`;
+        const minutes = Math.abs(offset % 60);
+        const hours = (Math.abs(offset) - minutes) / 60;
+        // TODO: AM/PM
+        const mm = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const hh = hours < 10 ? `0${hours}` : `${hours}`;
 
         return {
             text: `${name}: UTC ${sign}${hh}:${mm}`,
@@ -107,20 +108,3 @@ export const getDaysOfMonthOptions = () => [
     { text: c('Option').t`30th of the month`, value: 29 },
     { text: c('Option').t`31st of the month`, value: 30 }
 ];
-<<<<<<< HEAD:containers/autoReply/utils.ts
-
-export const getRoundedHours = (time: moment.MomentInput) => {
-    const startOfDay = moment(time).startOf('day');
-
-    return moment(moment(time).diff(startOfDay))
-        .startOf('hour')
-        .add(30 * Math.floor(moment(time).minutes() / 30), 'minutes')
-        .valueOf();
-};
-
-export const startOfDay = (date: moment.MomentInput) =>
-    moment(date)
-        .startOf('day')
-        .valueOf();
-=======
->>>>>>> Add date locales:containers/autoReply/utils.js

@@ -5,7 +5,8 @@ import { Button } from 'react-components';
 import { format } from 'date-fns';
 import { getWeekStartsOn, getFormattedWeekdays } from 'proton-shared/lib/date/date';
 import { dateLocale } from 'proton-shared/lib/i18n';
-import { getDaysOfMonthOptions, AutoReplyDuration } from './utils';
+import { AutoReplyDuration } from 'proton-shared/lib/constants';
+import { getDaysOfMonthOptions } from './utils';
 import InfoLine from './InfoLine';
 import { getMatchingValues, toModel } from './AutoReplyForm/useAutoReplyForm';
 

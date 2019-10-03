@@ -3,7 +3,8 @@ import { FormModal, useEventManager, useNotifications, useApi, useLoading } from
 import { updateAutoresponder } from 'proton-shared/lib/api/mailSettings';
 import PropTypes from 'prop-types';
 import { c } from 'ttag';
-import { AutoReplyDuration } from './utils';
+import { AutoReplyDuration } from 'proton-shared/lib/constants';
+
 import useAutoReplyForm from './AutoReplyForm/useAutoReplyForm';
 import AutoReplyFormFixed from './AutoReplyForm/AutoReplyFormFixed';
 import AutoReplyFormMonthly from './AutoReplyForm/AutoReplyFormMonthly';
